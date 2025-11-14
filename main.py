@@ -2,12 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Callable, Dict, List, Sequence, Tuple
-
 import numpy as np
-import pandas as pd
-import plotly.graph_objects as go
 import streamlit as st
 
 
@@ -407,6 +402,8 @@ def summarize_results(results: Sequence[OptimizerResult]) -> pd.DataFrame:
 
 
 def main() -> None:
+    """Render the Streamlit application."""
+
     st.set_page_config(page_title="Gradient Descent Visualizer", layout="wide")
     st.title("Gradient Descent Optimizer Visualizer")
     st.caption("Interactively compare optimizers, learning rates, and schedulers.")
@@ -448,9 +445,6 @@ def main() -> None:
     )
     custom_seed = st.sidebar.number_input("Random Seed", min_value=0, value=42, step=1)
 
-    st.sidebar.markdown("---")
-    run_simulation = st.sidebar.button("Run Optimization", type="primary")
-
     st.subheader("Objective Details")
     st.write(objective.description)
 
@@ -458,35 +452,34 @@ def main() -> None:
         st.info("Select at least one optimizer to start the simulation.")
         return
 
-    if run_simulation:
-        start = np.array([start_x, start_y], dtype=float)
-        results = [
-            run_optimizer(
-                optimizer,
-                objective,
-                steps,
-                base_lr,
-                beta1,
-                beta2,
-                start,
-                scheduler,
-                scheduler_params,
-                custom_noise,
-                custom_seed,
-            )
-            for optimizer in optimizers
-        ]
+    start = np.array([start_x, start_y], dtype=float)
+    results = [
+        run_optimizer(
+            optimizer,
+            objective,
+            steps,
+            base_lr,
+            beta1,
+            beta2,
+            start,
+            scheduler,
+            scheduler_params,
+            custom_noise,
+            custom_seed,
+        )
+        for optimizer in optimizers
+    ]
 
-        surface_fig = plot_surface(objective, results)
-        contour_fig = plot_contour(objective, results)
-        losses_fig = plot_losses(results)
-        summary_df = summarize_results(results)
+    surface_fig = plot_surface(objective, results)
+    contour_fig = plot_contour(objective, results)
+    losses_fig = plot_losses(results)
+    summary_df = summarize_results(results)
 
-        col1, col2 = st.columns(2)
-        col1.plotly_chart(surface_fig, use_container_width=True)
-        col2.plotly_chart(contour_fig, use_container_width=True)
-        st.plotly_chart(losses_fig, use_container_width=True)
-        st.dataframe(summary_df, use_container_width=True)
+    col1, col2 = st.columns(2)
+    col1.plotly_chart(surface_fig, use_container_width=True)
+    col2.plotly_chart(contour_fig, use_container_width=True)
+    st.plotly_chart(losses_fig, use_container_width=True)
+    st.dataframe(summary_df, use_container_width=True)
 
 
 if __name__ == "__main__":
