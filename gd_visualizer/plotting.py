@@ -58,7 +58,12 @@ def plot_contour(
     fig = go.Figure()
     fig.add_trace(
         go.Contour(
-            x=x[0], y=y[:, 0], z=z, colorscale="Viridis", contours_coloring="heatmap"
+            x=x[0],
+            y=y[:, 0],
+            z=z,
+            colorscale="Viridis",
+            contours_coloring="heatmap",
+            showscale=False,
         )
     )
     for result in results:
@@ -77,6 +82,13 @@ def plot_contour(
         xaxis_title="x",
         yaxis_title="y",
         height=600,
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=-0.2,
+            xanchor="center",
+            x=0.5,
+        ),
     )
     return fig
 
