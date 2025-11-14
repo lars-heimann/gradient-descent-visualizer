@@ -47,9 +47,7 @@ class ObjectiveFunction:
     x_range: Tuple[float, float]
     y_range: Tuple[float, float]
 
-    def surface(
-        self, resolution: int = 200
-    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    def surface(self, resolution: int = 200) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """Compute a grid for Plotly visualizations."""
 
         x = np.linspace(self.x_range[0], self.x_range[1], resolution)
@@ -113,9 +111,7 @@ def asymmetric_convex_function() -> ObjectiveFunction:
         )
 
     def grad(x: float, y: float) -> np.ndarray:
-        return np.array(
-            [0.6 * (x - 10.0) + 2.2 * (x + 10.0), 0.4 * (y - 10.0) + 2.0 * (y + 10.0)]
-        )
+        return np.array([0.6 * (x - 10.0) + 2.2 * (x + 10.0), 0.4 * (y - 10.0) + 2.0 * (y + 10.0)])
 
     return ObjectiveFunction(
         name="Asymmetric Convex",
@@ -285,40 +281,26 @@ def run_optimizer(
         positions.append(position)
         losses.append(objective.function(*position))
 
-    return OptimizerResult(
-        name=optimizer, positions=np.vstack(positions), losses=losses
-    )
+    return OptimizerResult(name=optimizer, positions=np.vstack(positions), losses=losses)
 
 
 def render_scheduler_controls(scheduler: str, steps: int) -> SchedulerParams:
     params: SchedulerParams = {}
     if scheduler == "Power":
-        params["power_steps"] = st.sidebar.number_input(
-            "Decay Steps", value=10.0, min_value=1.0
-        )
-        params["power_exponent"] = st.sidebar.number_input(
-            "Exponent", value=1.0, min_value=0.1
-        )
+        params["power_steps"] = st.sidebar.number_input("Decay Steps", value=10.0, min_value=1.0)
+        params["power_exponent"] = st.sidebar.number_input("Exponent", value=1.0, min_value=0.1)
     elif scheduler == "Exponential":
-        params["exp_gamma"] = st.sidebar.slider(
-            "Gamma", min_value=0.1, max_value=0.999, value=0.9
-        )
+        params["exp_gamma"] = st.sidebar.slider("Gamma", min_value=0.1, max_value=0.999, value=0.9)
     elif scheduler == "Piecewise":
-        raw_boundaries = st.sidebar.text_input(
-            "Boundaries (comma-separated)", value="10,20"
-        )
-        raw_values = st.sidebar.text_input(
-            "Values (comma-separated)", value="0.1,0.05,0.01"
-        )
+        raw_boundaries = st.sidebar.text_input("Boundaries (comma-separated)", value="10,20")
+        raw_values = st.sidebar.text_input("Values (comma-separated)", value="0.1,0.05,0.01")
         try:
             params["piecewise_boundaries"] = [
                 int(item) for item in raw_boundaries.split(",") if item.strip()
             ]
             params["piecewise_values"] = parse_float_sequence(raw_values)
         except ValueError:
-            st.sidebar.warning(
-                "Invalid boundaries or values. Falling back to defaults."
-            )
+            st.sidebar.warning("Invalid boundaries or values. Falling back to defaults.")
             params["piecewise_boundaries"] = [10, 20]
             params["piecewise_values"] = [0.1, 0.05, 0.01]
     elif scheduler == "Performance":
@@ -326,18 +308,14 @@ def render_scheduler_controls(scheduler: str, steps: int) -> SchedulerParams:
             "Lambda Factor", min_value=0.05, max_value=1.0, value=0.5
         )
     elif scheduler == "One Cycle":
-        params["one_cycle_max_lr"] = st.sidebar.number_input(
-            "Max LR", value=0.5, min_value=0.001
-        )
+        params["one_cycle_max_lr"] = st.sidebar.number_input("Max LR", value=0.5, min_value=0.001)
         params["one_cycle_total"] = st.sidebar.slider(
             "Cycle Steps", min_value=1, max_value=steps, value=max(steps // 2, 1)
         )
     return params
 
 
-def plot_surface(
-    objective: ObjectiveFunction, results: Sequence[OptimizerResult]
-) -> go.Figure:
+def plot_surface(objective: ObjectiveFunction, results: Sequence[OptimizerResult]) -> go.Figure:
     x, y, z = objective.surface()
     fig = go.Figure()
     fig.add_trace(
@@ -371,15 +349,11 @@ def plot_surface(
     return fig
 
 
-def plot_contour(
-    objective: ObjectiveFunction, results: Sequence[OptimizerResult]
-) -> go.Figure:
+def plot_contour(objective: ObjectiveFunction, results: Sequence[OptimizerResult]) -> go.Figure:
     x, y, z = objective.surface(resolution=300)
     fig = go.Figure()
     fig.add_trace(
-        go.Contour(
-            x=x[0], y=y[:, 0], z=z, colorscale="Viridis", contours_coloring="heatmap"
-        )
+        go.Contour(x=x[0], y=y[:, 0], z=z, colorscale="Viridis", contours_coloring="heatmap")
     )
     for result in results:
         fig.add_trace(
@@ -412,9 +386,7 @@ def plot_losses(results: Sequence[OptimizerResult]) -> go.Figure:
                 name=result.name,
             )
         )
-    fig.update_layout(
-        title="Loss over Steps", xaxis_title="Step", yaxis_title="f(x, y)"
-    )
+    fig.update_layout(title="Loss over Steps", xaxis_title="Step", yaxis_title="f(x, y)")
     return fig
 
 
@@ -462,12 +434,8 @@ def main() -> None:
         "Base Learning Rate", value=0.1, min_value=0.0001, step=0.01, format="%0.4f"
     )
 
-    beta1 = st.sidebar.slider(
-        "Beta1 / Momentum", min_value=0.0, max_value=0.999, value=0.9
-    )
-    beta2 = st.sidebar.slider(
-        "Beta2 (Adam)", min_value=0.0, max_value=0.999, value=0.999
-    )
+    beta1 = st.sidebar.slider("Beta1 / Momentum", min_value=0.0, max_value=0.999, value=0.9)
+    beta2 = st.sidebar.slider("Beta2 (Adam)", min_value=0.0, max_value=0.999, value=0.999)
 
     scheduler = st.sidebar.selectbox("Learning Rate Scheduler", SCHEDULER_OPTIONS)
     scheduler_params = render_scheduler_controls(scheduler, steps)
