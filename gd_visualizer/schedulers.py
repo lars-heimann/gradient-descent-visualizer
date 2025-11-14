@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-from typing import Dict, Sequence
+from collections.abc import Sequence
 
 import streamlit as st
 
-SchedulerParams = Dict[str, object]
+SchedulerParams = dict[str, object]
 
 SCHEDULER_OPTIONS = [
     "None",

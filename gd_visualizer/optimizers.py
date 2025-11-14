@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import List
 
 import numpy as np
 
@@ -29,7 +28,7 @@ class OptimizerResult:
 
     name: str
     positions: np.ndarray
-    losses: List[float]
+    losses: list[float]
 
 
 def clip_position(position: np.ndarray, objective: ObjectiveFunction) -> np.ndarray:

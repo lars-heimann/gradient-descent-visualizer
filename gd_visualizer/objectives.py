@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Callable, Dict, Tuple
+from collections.abc import Callable
 
 import numpy as np
 
@@ -19,12 +19,12 @@ class ObjectiveFunction:
     description: str
     function: ScalarFunction
     gradient: GradientFunction
-    x_range: Tuple[float, float]
-    y_range: Tuple[float, float]
+    x_range: tuple[float, float]
+    y_range: tuple[float, float]
 
     def surface(
         self, resolution: int = 200
-    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         """Compute a grid for Plotly visualizations."""
 
         x = np.linspace(self.x_range[0], self.x_range[1], resolution)
@@ -112,7 +112,7 @@ def l_shaped_function() -> ObjectiveFunction:
     )
 
 
-def get_objectives() -> Dict[str, ObjectiveFunction]:
+def get_objectives() -> dict[str, ObjectiveFunction]:
     """Return all available objective functions keyed by their display name."""
 
     return {
