@@ -12,7 +12,7 @@ dependencies = [
         "streamlit>=1.38",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
     "pre-commit>=3.8,<5",
     "ruff>=0.7,<1",
