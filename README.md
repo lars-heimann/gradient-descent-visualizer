@@ -16,6 +16,19 @@ uv run streamlit run main.py
 ```
 The app launches in your browser (default: http://localhost:8501). Use the sidebar to select objectives, optimizers, learning-rate settings, and scheduler parameters.
 
+### Development Workflow
+Set up the development tooling and git hooks to keep formatting and linting consistent:
+
+```bash
+uv sync --group dev
+uv run pre-commit install
+pre-commit run --all-files
+```
+
+- `uv sync --group dev` installs the optional development dependencies defined in `pyproject.toml` (including `pre-commit` and `ruff`).
+- `uv run pre-commit install` registers the git hooks for this repository.
+- `pre-commit run --all-files` checks and auto-formats the entire codebase; the hooks will run automatically on future commits.
+
 ### Controls Overview
 - **Objective Function**: Picks the landscape and defines the clipping range for trajectories.
 - **Starting x/y & Steps**: Control the initial point and number of gradient steps.
