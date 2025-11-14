@@ -124,7 +124,6 @@ def summarize_results(results: Sequence[OptimizerResult]) -> pd.DataFrame:
                 "Final X": round(float(final_position[0]), 4),
                 "Final Y": round(float(final_position[1]), 4),
                 "Final Loss": round(float(result.losses[-1]), 6),
-                "Steps": len(result.losses) - 1,
             }
         )
     return pd.DataFrame(summary)
